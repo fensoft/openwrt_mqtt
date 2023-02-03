@@ -1,5 +1,4 @@
 #!/bin/sh
-read -p "mqtt ip?" IP
 cat << EOF > /root/openwrt_mqtt
 #!/bin/sh
 while sleep 5; do
@@ -20,7 +19,7 @@ EOF
 opkg install ethtool mosquitto-client-nossl coreutils-nohup
 cat << EOF > /etc/init.d/openwrt_mqtt
 #!/bin/sh
-/usr/bin/nohup /root/openwrt_mqtt lan1,lan2,lan3,wan $IP 2>&1 > /dev/null&
+/usr/bin/nohup /root/openwrt_mqtt lan1,lan2,lan3,wan $2 2>&1 > /dev/null&
 EOF
 chmod a+x /root/openwrt_mqtt /etc/init.d/openwrt_mqtt
 rm -f /etc/rc.d/*openwrt_mqtt
