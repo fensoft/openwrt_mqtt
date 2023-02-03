@@ -8,14 +8,14 @@ while sleep 5; do
     SPEED=\`ethtool \$i | grep "Speed: " | sed "s#.*: ##" | sed "s#Unknown!#No Speed#" | sed "s#b/s##"\`
     RX=\`ifconfig \$i | grep "RX bytes:" | sed "s#.*RX bytes:\([0-9]*\) .*#\\1#"\`
     TX=\`ifconfig \$i | grep "TX bytes:" | sed "s#.*TX bytes:\([0-9]*\) .*#\\1#"\`
-    eval "OLDRX=\\$RX_\$i"
+    eval "OLDRX=\\\$RX_\$i"
     if [ "\$OLDRX" ]; then
-      eval "RXSPD=\\$(((\$RX-\$OLDRX)/\$SLEEP))"
+      eval "RXSPD=\\\$(((\$RX-\$OLDRX)/\$SLEEP))"
     fi
     eval "RX_\$i=\$RX"
-    eval "OLDTX=\\$TX_\$i"
+    eval "OLDTX=\\\$TX_\$i"
     if [ "\$OLDTX" ]; then
-      eval "TXSPD=\\$(((\$TX-\$OLDTX)/\$SLEEP))"
+      eval "TXSPD=\\\$(((\$TX-\$OLDTX)/\$SLEEP))"
     fi
     eval "TX_\$i=\$TX"
     mosquitto_pub -h \$2 -t openwrt/$HOSTNAME/\$i/link -m "\$LINK"
