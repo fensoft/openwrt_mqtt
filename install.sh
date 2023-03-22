@@ -1,13 +1,14 @@
 #!/bin/sh
 cat << EOF > /root/openwrt_mqtt
 #!/bin/sh
-while sleep 5; do
+SLEEP=15
+while sleep \$SLEEP; do
   IFS=,
   for i in \$1; do
     LINK=\`ethtool \$i | grep "Link detected: " | sed "s#.*: ##"\`
     SPEED=\`ethtool \$i | grep "Speed: " | sed "s#.*: ##" | sed "s#Unknown!#No Speed#" | sed "s#b/s##"\`
-    RX=\`ifconfig \$i | grep "RX bytes:" | sed "s#.*RX bytes:\([0-9]*\) .*#\\1#"\`
-    TX=\`ifconfig \$i | grep "TX bytes:" | sed "s#.*TX bytes:\([0-9]*\) .*#\\1#"\`
+    RX=\`ethtool -S \$i | grep RxBytes | sed "s#.*: ##"\`
+    TX=\`ethtool -S \$i | grep TxBytes | sed "s#.*: ##"\`
     eval "OLDRX=\\\$RX_\$i"
     if [ "\$OLDRX" ]; then
       eval "RXSPD=\\\$(((\$RX-\$OLDRX)/\$SLEEP))"
@@ -30,7 +31,7 @@ EOF
 opkg install ethtool mosquitto-client-nossl coreutils-nohup
 cat << EOF > /etc/init.d/openwrt_mqtt
 #!/bin/sh
-/usr/bin/nohup /root/openwrt_mqtt lan1,lan2,lan3,wan $2 2>&1 > /dev/null&
+/usr/bin/nohup /root/openwrt_mqtt lan1,lan2,lan3,wan $1 2>&1 > /dev/null&
 EOF
 chmod a+x /root/openwrt_mqtt /etc/init.d/openwrt_mqtt
 rm -f /etc/rc.d/*openwrt_mqtt
